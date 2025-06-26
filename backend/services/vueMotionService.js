@@ -1,15 +1,20 @@
-const generateVueMotionUrl = async (patientId) => {
-  const endpoint = 'https://medicos.imagenesmdq.com/portal/CSPublicQueryService/CSPublicQueryService.svc/json/EncryptQSSecure?embed_cred=1';
+require ('dotenv').config();
 
-  const queryString = `user_name=administrator&password=kodakmdq200&patient_id=${patientId}&hide_top=all`;
+
+const generateVueMotionUrl = async (patientId) => {
+  const endpoint = process.env.VUE_ENDPOINT;
+  const user = process.env.VUE_USERNAME;
+  const pass = process.env.VUE_PASSWORD;
+
+  const queryString = `user_name=${user}&password=${pass}&patient_id=${patientId}&hide_top=all`;
 
   const body = {
     AddTS: true,
     UseUTC: true,
-    UserName: 'administrator',
+    UserName: user,
     QueryString: queryString,
     TimeStampFormat: null,
-    Password: 'kodakmdq200',
+    Password: pass,
     IsSSO: false
   };
 
@@ -26,7 +31,7 @@ const generateVueMotionUrl = async (patientId) => {
     });
 
     const raw = await response.text();
-    const token = raw.replace(/^"|"$/g, ''); // quitar comillas dobles
+    const token = raw.replace(/^"|"$/g, '');
     const redirectUrl = `https://medicos.imagenesmdq.com/portal?urltoken=${token}`;
     return redirectUrl;
 
