@@ -27,13 +27,17 @@ const loginUser = async (req, res) => {
 
     await user.update({ lastLogin: new Date() });
 
-    if (user.role === 'patient') {
+     if (user.role === 'patient') {
       const vueUrl = await generateVueMotionUrl(user.dni);
       return res.status(200).json({ redirectUrl: vueUrl });
-    } else if (user.role === 'admin') {
-      const safeUser = sanitizeUser(user);
-      return res.status(200).json({ message: 'Login exitoso como administrador', user: safeUser });
     }
+
+    // Para admin y admission
+    const safeUser = sanitizeUser(user);
+    return res.status(200).json({
+      message: `Login exitoso como ${user.role}`,
+      user: safeUser
+    });
 
   } catch (error) {
     console.error('Error en login:', error);

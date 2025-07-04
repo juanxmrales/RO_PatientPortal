@@ -15,7 +15,7 @@ export default function AdminSidebar() {
         <nav className="space-y-2">
           <Collapsible open={isListsOpen} onOpenChange={setIsListsOpen}>
             <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-sm font-medium text-slate-300 hover:text-white p-2 rounded">
-              <span>📋 Mis registros</span>
+              <span>📋 Registro de pacientes</span>
               {isListsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </CollapsibleTrigger>
           </Collapsible>

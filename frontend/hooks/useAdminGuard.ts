@@ -13,7 +13,7 @@ export default function useAdminGuard() {
         if (userRaw) {
             try {
             const parsedUser = JSON.parse(userRaw);
-            if (parsedUser.role === "admin") {
+            if (parsedUser.role === "admin" || parsedUser.role === "admission") {
                 setUser(parsedUser);
                 setChecking(false);
             } else {
