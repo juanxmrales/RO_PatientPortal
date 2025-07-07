@@ -106,9 +106,9 @@ export default function HospitalAdmin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar user={user} onLogout={handleLogout} />
-      <div className="flex">
+      <div className="flex flex-1">
         <AdminSidebar />
         <div className="flex-1 p-6">
           <div className="mb-4">
