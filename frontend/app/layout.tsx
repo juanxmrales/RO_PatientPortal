@@ -6,9 +6,9 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Hospital Information System - Admin",
-  description: "Hospital patient management system",
-    generator: 'v0.dev'
+  title: "RO Patient Portal",
+  description: "Portal de pacientes vinculado a Philips VueMotion",
+    generator: 'Juan Cruz Morales - Radiográfica Oeste S.R.L.'
 }
 
 export default function RootLayout({

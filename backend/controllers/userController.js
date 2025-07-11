@@ -3,7 +3,7 @@ const User = require('../models/User');
 const { findUserByField } = require('../utils/userUtils');
 const { generateVueMotionUrl } = require('../services/vueMotionService');
 const {sanitizeUser} = require('../utils/userUtils');
-
+const { generateSimplePassword } = require('../utils/passwordGenerator');
 
 
 const loginUser = async (req, res) => {
@@ -49,7 +49,7 @@ const createUser = async (req, res) => {
   try {
     const { firstName, lastName, dni, email, password, role } = req.body;
 
-    if (!firstName || !lastName || !dni || !email || !password) {
+    if (!firstName || !lastName || !dni || !email) {
       return res.status(400).json({ message: 'Faltan campos requeridos' });
     }
 
@@ -58,7 +58,15 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: 'Ya existe un usuario registrado con ese DNI' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+     // Solo pacientes pueden generarse sin contraseña
+    if (role !== 'patient' && !password) {
+      return res.status(400).json({ message: 'Los usuarios administrativos deben tener contraseña' });
+    }
+
+     // Si no se envía una contraseña, generamos una simple
+    const rawPassword = password || generateSimplePassword();
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
     const newUser = await User.create({
       firstName,
       lastName,
