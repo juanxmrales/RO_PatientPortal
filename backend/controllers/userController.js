@@ -2,14 +2,14 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const { findUserByField } = require('../utils/userUtils');
 const { generateVueMotionUrl } = require('../services/vueMotionService');
-const {sanitizeUser} = require('../utils/userUtils');
+const { sanitizeUser } = require('../utils/userUtils');
 const { generateSimplePassword } = require('../utils/passwordGenerator');
 
 
 const loginUser = async (req, res) => {
   try {
     const { dni, password } = req.body;
-    
+
     //A futuro usar joi o express-validator para validar los campos
     if (!dni || !password) {
       return res.status(400).json({ message: 'DNI y contraseña son requeridos' });
@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
 
     await user.update({ lastLogin: new Date() });
 
-     if (user.role === 'patient') {
+    if (user.role === 'patient') {
       const vueUrl = await generateVueMotionUrl(user.dni);
       return res.status(200).json({ redirectUrl: vueUrl });
     }
@@ -58,12 +58,12 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: 'Ya existe un usuario registrado con ese DNI' });
     }
 
-     // Solo pacientes pueden generarse sin contraseña
+    // Solo pacientes pueden generarse sin contraseña
     if (role !== 'patient' && !password) {
       return res.status(400).json({ message: 'Los usuarios administrativos deben tener contraseña' });
     }
 
-     // Si no se envía una contraseña, generamos una simple
+    // Si no se envía una contraseña, generamos una simple
     const rawPassword = password || generateSimplePassword();
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
 

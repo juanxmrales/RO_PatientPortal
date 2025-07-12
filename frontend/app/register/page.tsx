@@ -11,7 +11,7 @@ import PatientCreatedModal from "@/components/PatientCreateModal";
 import { useRef } from "react";
 
 export default function RegisterPatient() {
-  const { user, checking } = useAdminGuard(); 
+  const { user, checking } = useAdminGuard();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [createdPatient, setCreatedPatient] = useState<null | typeof formData>(null);
@@ -61,7 +61,7 @@ export default function RegisterPatient() {
 
   if (checking || !user) return <div className="text-white p-4">Cargando...</div>;
 
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar user={user} onLogout={() => router.push("/login")} />
@@ -108,17 +108,17 @@ export default function RegisterPatient() {
         </div>
       </div>
       {createdPatient && (
-      <PatientCreatedModal
-        open={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setTimeout(() => {
-            nameInputRef.current?.focus();
-          }, 100);
-        }}
-        patient={createdPatient}
-      />
-    )}
+        <PatientCreatedModal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setTimeout(() => {
+              nameInputRef.current?.focus();
+            }, 100);
+          }}
+          patient={createdPatient}
+        />
+      )}
     </div>
   );
 }
