@@ -4,6 +4,8 @@ const { findUserByField } = require('../utils/userUtils');
 const { generateVueMotionUrl } = require('../services/vueMotionService');
 const { sanitizeUser } = require('../utils/userUtils');
 const { generateSimplePassword } = require('../utils/passwordGenerator');
+const { sendPatientCreatedEmail } = require("../services/emailService");
+
 
 
 const loginUser = async (req, res) => {
@@ -75,6 +77,8 @@ const createUser = async (req, res) => {
       password: hashedPassword,
       role: role || 'patient',
     });
+
+    await sendPatientCreatedEmail(newUser);
 
     const safeUser = sanitizeUser(newUser);
     res.status(201).json(safeUser);

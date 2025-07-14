@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useAdminGuard from "@/hooks/useAdminGuard";
-import PatientCreatedModal from "@/components/PatientCreateModal";
+import PatientCreatedModal from "@/components/PatientCreatedModal";
 import { useRef } from "react";
 
 export default function RegisterPatient() {
