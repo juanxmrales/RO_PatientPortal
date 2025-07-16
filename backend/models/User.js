@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const EmailLog = require('./EmailLog');
 
 //Usuarios tanto pacientes como administradores
 const User = sequelize.define('User', {
@@ -12,7 +13,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  lastName: {                    
+  lastName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -26,16 +27,16 @@ const User = sequelize.define('User', {
     allowNull: false,
     unique: true,
   },
-  password: {                    
+  password: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM('patient', 'admin','admission'),  //Usamos ENUM para poder agregar mas roles a futuro
+    type: DataTypes.ENUM('patient', 'admin', 'admission'),  //Usamos ENUM para poder agregar mas roles a futuro
     allowNull: false,
     defaultValue: 'patient',
   },
-    lastLogin: {
+  lastLogin: {
     type: DataTypes.DATE,
     allowNull: true,
   },
@@ -45,5 +46,10 @@ const User = sequelize.define('User', {
 });
 
 module.exports = User;
+
+
+User.hasMany(EmailLog, { foreignKey: 'userId', as: 'emailLogs' });
+EmailLog.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 console.log('Modelo User definido');
 

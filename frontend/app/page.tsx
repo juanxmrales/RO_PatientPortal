@@ -14,7 +14,7 @@ export default function Home() {
     } else if (role === "admin") {
       router.push("/admin");
     } else if (role === "patient") {
-      // Reemplazá con el token real cuando lo tengas
+      // CAMBIAR
       window.location.href = "https://medicos.imagenesmdq.com/portal?urltoken=...";
     } else {
       router.push("/login");

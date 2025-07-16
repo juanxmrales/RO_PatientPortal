@@ -5,6 +5,7 @@ const { generateVueMotionUrl } = require('../services/vueMotionService');
 const { sanitizeUser } = require('../utils/userUtils');
 const { generateSimplePassword } = require('../utils/passwordGenerator');
 const { sendPatientCreatedEmail } = require("../services/emailService");
+const { enqueueEmail } = require('../services/emailQueue');
 
 
 
@@ -47,6 +48,17 @@ const loginUser = async (req, res) => {
   }
 };
 
+
+/**
+ * 
+ * Crea un nuevo usuario.
+ * Solo pacientes pueden crearse sin contraseña.
+ * Si no se envía una contraseña, se genera una simple.
+ * Los usuarios administrativos deben tener contraseña.
+ * No envia el correo inmediatamente, lo encola y luego es enviado.
+ */
+
+
 const createUser = async (req, res) => {
   try {
     const { firstName, lastName, dni, email, password, role } = req.body;
@@ -78,7 +90,9 @@ const createUser = async (req, res) => {
       role: role || 'patient',
     });
 
-    await sendPatientCreatedEmail(newUser);
+    enqueueEmail(newUser, async (user) => {
+      await sendPatientCreatedEmail(user); // sigue usando tu servicio existente
+    });
 
     const safeUser = sanitizeUser(newUser);
     res.status(201).json(safeUser);

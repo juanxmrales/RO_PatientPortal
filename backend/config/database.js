@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-require ('dotenv').config(); // Carga las variables de entorno desde .env
+require('dotenv').config(); // Carga las variables de entorno desde .env
 // Configuración de la conexión a la base de datos MySQL usando Sequelize
 
 

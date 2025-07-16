@@ -31,8 +31,8 @@ export default function AdminSidebar() {
               <Button
                 variant="ghost"
                 className={`w-full justify-start text-sm ${pathname === "/register"
-                    ? "bg-blue-600 text-white"
-                    : "text-blue-400 hover:text-blue-300 "
+                  ? "bg-blue-600 text-white"
+                  : "text-blue-400 hover:text-blue-300 "
                   }`}
                 onClick={() => window.location.href = "/register"}
               >
@@ -51,8 +51,8 @@ export default function AdminSidebar() {
               <Button
                 variant="ghost"
                 className={`w-full justify-start text-sm ${pathname === "/admin"
-                    ? "bg-blue-600 text-white"
-                    : "text-blue-400 hover:text-blue-300"
+                  ? "bg-blue-600 text-white"
+                  : "text-blue-400 hover:text-blue-300"
                   }`}
                 onClick={() => router.push("/admin")}
               >
