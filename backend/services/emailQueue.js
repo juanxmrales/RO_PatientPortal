@@ -11,12 +11,12 @@ async function processQueue() {
 
     try {
         await logEmailSent(user);
-        console.log(`✅ Correo enviado con éxito a ${user.email}`);
+        console.log(`✅ Correo a ${user.email} procesado exitosamente`);
     } catch (err) {
         console.error(`❌ Error al enviar correo a ${user.email}:`, err);
     } finally {
         isSending = false;
-        setImmediate(processQueue); // continúa con el siguiente
+        setImmediate(processQueue);
     }
 }
 

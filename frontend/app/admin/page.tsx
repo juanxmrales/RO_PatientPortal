@@ -60,33 +60,33 @@ export default function HospitalAdmin() {
       const startX = e.clientX;
       const startWidth = columnWidths[column];
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const diff = e.clientX - startX;
-      const newWidth = Math.max(80, startWidth + diff);
-      setColumnWidths((prev) => ({ ...prev, [column]: newWidth }));
-    };
+      const handleMouseMove = (e: MouseEvent) => {
+        const diff = e.clientX - startX;
+        const newWidth = Math.max(80, startWidth + diff);
+        setColumnWidths((prev) => ({ ...prev, [column]: newWidth }));
+      };
 
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      setResizingColumn(null);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
+      const handleMouseUp = () => {
+        setIsResizing(false);
+        setResizingColumn(null);
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+      };
 
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, [columnWidths]);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }, [columnWidths]);
 
-    if (checking || !user) {
-      return <div className="text-white p-4">Cargando...</div>;
-      }
+  if (checking || !user) {
+    return <div className="text-white p-4">Cargando...</div>;
+  }
 
-  const renderResizeHandle = (column: string) => 
- (
+  const renderResizeHandle = (column: string) =>
+  (
     <div
       className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/50 transition-colors flex items-center justify-center group/handle"
       onMouseDown={(e) => handleMouseDown(column, e)}
@@ -114,18 +114,19 @@ export default function HospitalAdmin() {
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">👥 Usuarios del sistema</h2>
           </div>
-
-          <PatientTable
-            patients={users}
-            columnWidths={columnWidths}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-            filters={filters}
-            handleSort={handleSort}
-            handleFilter={handleFilter}
-            clearFilter={clearFilter}
-            renderResizeHandle={renderResizeHandle}
-          />
+          <div className="overflow-y-auto max-h-[calc(95vh-200px)] bg-slate-800 rounded-lg border border-slate-700 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
+            <PatientTable
+              patients={users}
+              columnWidths={columnWidths}
+              sortColumn={sortColumn}
+              sortDirection={sortDirection}
+              filters={filters}
+              handleSort={handleSort}
+              handleFilter={handleFilter}
+              clearFilter={clearFilter}
+              renderResizeHandle={renderResizeHandle}
+            />
+          </div>
 
           <div className="flex items-center justify-between mt-6">
             <div className="text-sm text-slate-400">1 - 19 de {users.length} items</div>
