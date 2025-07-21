@@ -8,6 +8,7 @@ import AdminSidebar from "@/components/AdminSidebar";
 import PatientTable from "@/components/PatientTable";
 import useAdminGuard from "@/hooks/useAdminGuard";
 import type { Patient } from "@/types/patient";
+import PatientDetailModal from "@/components/PatientDetailModal";
 
 export default function HospitalAdmin() {
   const [users, setUsers] = useState<Patient[]>([]);
@@ -18,6 +19,28 @@ export default function HospitalAdmin() {
   const [resizingColumn, setResizingColumn] = useState<string | null>(null);
   const [filters, setFilters] = useState<Record<string, string>>({});
   const { user, checking } = useAdminGuard();
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenPatient = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedPatient(null);
+    setIsModalOpen(false);
+  };
+
+  const handleEdit = (updated: Patient) => {
+    console.log("Editar", updated);
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = (id: number) => {
+    console.log("Eliminar", id);
+    setIsModalOpen(false);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("session");
@@ -125,8 +148,18 @@ export default function HospitalAdmin() {
               handleFilter={handleFilter}
               clearFilter={clearFilter}
               renderResizeHandle={renderResizeHandle}
+              onSelectPatient={handleOpenPatient}
             />
           </div>
+          {selectedPatient && (
+            <PatientDetailModal
+              patient={selectedPatient}
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
 
           <div className="flex items-center justify-between mt-6">
             <div className="text-sm text-slate-400">1 - 19 de {users.length} items</div>

@@ -1,11 +1,12 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Filter, ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 import type { PatientTableProps } from "@/types/patientTableProps";
+import type { Patient } from "@/types/patient";
 
 
 
@@ -19,7 +20,8 @@ export default function PatientTable({
   handleFilter,
   clearFilter,
   renderResizeHandle,
-}: PatientTableProps) {
+  onSelectPatient, // ← este nuevo prop
+}: PatientTableProps & { onSelectPatient: (patient: Patient) => void }) {
   const getUniqueValues = (column: string) => {
     const values = patients.map((p) => (p as any)[column]);
     return [...new Set(values)].filter(Boolean);
@@ -61,7 +63,7 @@ export default function PatientTable({
                 { key: "email", label: "Email" },
                 { key: "createdAt", label: "Creado en" },
                 { key: "lastLogin", label: "Último acceso" },
-                ].map(({ key, label }) => (
+              ].map(({ key, label }) => (
                 <TableHead
                   key={key}
                   className="text-slate-300 relative group cursor-pointer select-none"
@@ -134,19 +136,23 @@ export default function PatientTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {patients.map((patient, index) => (
-                <TableRow key={index} className="border-slate-700 hover:bg-slate-700">
+            {patients.map((patient) => (
+              <TableRow
+                key={patient.id}
+                onClick={() => onSelectPatient(patient)}
+                className="border-slate-700 hover:bg-slate-600 cursor-pointer"
+              >
                 <TableCell className="text-slate-300">{patient.dni}</TableCell>
                 <TableCell className="text-slate-300">{patient.firstName}</TableCell>
                 <TableCell className="text-slate-300">{patient.lastName}</TableCell>
                 <TableCell className="text-slate-300">{patient.email}</TableCell>
                 <TableCell className="text-slate-300">{new Date(patient.createdAt).toLocaleString()}</TableCell>
                 <TableCell className="text-slate-300">
-                    {patient.lastLogin ? new Date(patient.lastLogin).toLocaleString() : "—"}
+                  {patient.lastLogin ? new Date(patient.lastLogin).toLocaleString() : "—"}
                 </TableCell>
-                </TableRow>
+              </TableRow>
             ))}
-         </TableBody>
+          </TableBody>
         </Table>
       </div>
     </TooltipProvider>
