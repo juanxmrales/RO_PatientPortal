@@ -21,5 +21,5 @@ export default function usePatientData() {
         fetchPatients();
     }, []);
 
-    return { patients, loading };
+    return { patients, setPatients, loading };
 }

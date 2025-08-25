@@ -3,11 +3,11 @@ const EmailLog = require("../models/EmailLog");
 
 const transporter = nodemailer.createTransport({
     host: "mail.radoeste.com",
-    port: 465,                  // o 587 si usás STARTTLS
+    port: 465,                  // o 587 para STARTTLS
     secure: true,               // true para 465, false para 587
     auth: {
-        user: process.env.MAIL_USER, // ej: info@tudominio.com
-        pass: process.env.MAIL_PASS, // contraseña real o de app
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
     },
 });
 

@@ -102,6 +102,65 @@ const createUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, dni, email, role } = req.body;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Validar si otro usuario ya tiene ese email
+    if (email && email !== user.email) {
+      const existingEmail = await User.findOne({ where: { email } });
+      if (existingEmail && existingEmail.id !== user.id) {
+        return res.status(400).json({ message: 'Ya existe un usuario con ese email' });
+      }
+    }
+
+    // Validar si otro usuario ya tiene ese DNI
+    if (dni && dni !== user.dni) {
+      const existingDni = await User.findOne({ where: { dni } });
+      if (existingDni && existingDni.id !== user.id) {
+        return res.status(400).json({ message: 'Ya existe un usuario con ese DNI' });
+      }
+    }
+
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.dni = dni || user.dni;
+    user.email = email || user.email;
+    user.role = role || user.role;
+
+    await user.save();
+
+    const safeUser = sanitizeUser(user);
+    res.status(200).json(safeUser);
+  } catch (error) {
+    console.error('Error actualizando usuario:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    await user.destroy();
+    res.status(200).json({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error eliminando usuario:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
 const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -113,4 +172,4 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { createUser, getUsers, loginUser };
+module.exports = { createUser, updateUser, deleteUser, getUsers, loginUser };

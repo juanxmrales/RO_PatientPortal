@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function UserManagementPanel({ user }: Props) {
-    const { patients: users, loading } = usePatientData();
+    const { patients: users, setPatients, loading } = usePatientData();
     const [sortColumn, setSortColumn] = useState("");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
     const [filters, setFilters] = useState<Record<string, string>>({});
@@ -53,16 +53,63 @@ export default function UserManagementPanel({ user }: Props) {
         });
     };
 
-    const handleEdit = (updatedPatient: Patient) => {
-        console.log("Paciente actualizado:", updatedPatient);
-        setIsModalOpen(false);
-        setSelectedPatient(null);
+    const handleEdit = async (updatedPatient: Patient) => {
+        try {
+            const res = await fetch(`http://localhost:3001/api/users/${updatedPatient.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedPatient),
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text(); // Captura la respuesta real del backend
+                console.error("❌ Error al actualizar:", res.status, errorText);
+                throw new Error("No se pudo actualizar el usuario");
+            }
+
+            const updated = await res.json();
+
+            // Actualizar el listado local (opcionalmente re-fetch o update in-place)
+            setSelectedPatient(null);
+            setIsModalOpen(false);
+
+            // Podés actualizar directamente el array:
+            setPatients(prev =>
+                prev.map(u => (u.id === updated.id ? updated : u))
+            );
+
+        } catch (error) {
+            console.error("Error al actualizar el usuario:", error);
+        }
     };
 
-    const handleDelete = (id: number) => {
-        console.log("Paciente eliminado con ID:", id);
-        setIsModalOpen(false);
-        setSelectedPatient(null);
+    const handleDelete = async (id: number) => {
+        if (!confirm("¿Eliminar este usuario?")) return;
+
+        try {
+            const res = await fetch(`http://localhost:3001/api/users/${id}`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                const txt = await res.text();
+                console.error("❌ Error al eliminar:", res.status, txt);
+                alert("No se pudo eliminar el usuario.");
+                return;
+            }
+
+            // 1) cerramos modal
+            setIsModalOpen(false);
+            setSelectedPatient(null);
+
+            // 2) sacamos el usuario de la lista en memoria (sin re-fetch)
+            setPatients(prev => prev.filter(u => u.id !== id));
+        } catch (err) {
+            console.error("❌ Error en handleDelete:", err);
+            alert("Error al eliminar. Revisá la consola para más detalles.");
+        }
     };
 
     const handleSelectPatient = (patient: Patient) => {
