@@ -1,17 +1,24 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config(); // Carga las variables de entorno desde .env
-// Configuración de la conexión a la base de datos MySQL usando Sequelize
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-
-const sequelize = new Sequelize({
-  database: process.env.DB_NAME,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
-  dialect: 'mysql',
-  logging: false
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
+async function testConnection() {
+  const connection = await pool.getConnection();
+  try {
+    await connection.ping();
+  } finally {
+    connection.release();
+  }
+}
 
-module.exports = sequelize;
+module.exports = { pool, testConnection };
