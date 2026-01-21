@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const EmailLog = require("../models/EmailLog");
+const { pool } = require("../config/database");
 
 const transporter = nodemailer.createTransport({
     host: "mail.radoeste.com",
@@ -11,6 +11,13 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+async function logEmail({ userId, email, status, type, error }) {
+    await pool.execute(
+        `INSERT INTO email_logs (userId, email, status, type, error, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
+        [userId, email, status, type, error]
+    );
+}
 
 async function sendPatientCreatedEmail(patient) {
     const mailOptions = {
@@ -28,7 +35,7 @@ async function sendPatientCreatedEmail(patient) {
     try {
         await transporter.sendMail(mailOptions);
 
-        await EmailLog.create({
+        await logEmail({
             userId: patient.id,
             email: patient.email,
             status: 'sent',
@@ -38,7 +45,7 @@ async function sendPatientCreatedEmail(patient) {
     } catch (error) {
         console.error("❌ Error al enviar correo:", error);
 
-        await EmailLog.create({
+        await logEmail({
             userId: patient.id,
             email: patient.email,
             status: 'failed',
